@@ -1,0 +1,23 @@
+# https://docs.mitmproxy.org/stable/concepts-modes/#wireguard-transparent-proxy
+
+x-mitmdump: &mitmdump
+  image: mitmproxy/mitmproxy:9.0.1
+  init: true
+  network_mode: host
+
+version: "3"
+services:
+  proxy01:
+    <<: *mitmdump
+    command:
+      - mitmdump
+      - --mode
+      - wireguard@51801
+      - --set
+      - stream_large_bodies=8m
+      - --save-stream-file
+      - "+/data/%Y-%m-%d.flows"
+    volumes:
+      # 只给一个容器开放写权限，确保所有proxy共用相同的配置
+      - ./conf:/home/mitmproxy/.mitmproxy
+      - ./data:/data
