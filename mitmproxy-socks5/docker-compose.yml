@@ -1,17 +1,21 @@
-# https://docs.mitmproxy.org/stable/concepts-modes/#wireguard-transparent-proxy
+# https://docs.mitmproxy.org/stable/concepts-modes/#socks-proxy
 
 x-mitmdump: &mitmdump
   image: mitmproxy/mitmproxy:9.0.1
   init: true
-  network_mode: host
 
 services:
   proxy:
     <<: *mitmdump
     command:
       - mitmdump
+      - --server
       - --mode
-      - wireguard@51801
+      - socks5
+      - --listen-host
+      - 0.0.0.0
+      - --listen-port
+      - "2000"
       - --set
       - stream_large_bodies=8m
       - --save-stream-file
